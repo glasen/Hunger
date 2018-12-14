@@ -7,7 +7,7 @@ def main():
     parser.add_argument("--woche", "-w", help="Bunte Wochenübersicht ...", action='store_true', required=False)
 
     mensen = {"THM": "giessen_thm", "Campustor": "giessen_campustor", "MILF": "giessen_mfhf", "IFZ": "giessen_cafeifz",
-              "CaRe": "giessen_cafecare", "OBS":"giessen_obs_tage"}
+              "CaRe": "giessen_cafecare", "OBS": "giessen_obs_tage"}
 
     args = parser.parse_args()
     mensa_list = args.mensa
@@ -15,14 +15,13 @@ def main():
 
     home = str(Path.home())
 
-    if os.path.isfile(home+"/.hunger"):
-        parsed_list = _parse_hunger_config_file(home+"/.hunger", mensen)
+    if os.path.isfile(home + "/.hunger"):
+        parsed_list = _parse_hunger_config_file(home + "/.hunger", mensen)
         if len(parsed_list) != 0:
             mensa_list = parsed_list
         else:
             print("Fehler in der Konfigurationsdatei. Keine gültigen Einträge gefunden!")
             exit(1)
-
 
     for mensa in mensa_list:
         mensa_id = mensen[mensa]
@@ -32,7 +31,7 @@ def main():
         if week_set:
             for dates, menus in food_dict.items():
                 year, year_day = dates
-                _get_menus(mensa,menus, year, year_day)
+                _get_menus(mensa, menus, year, year_day)
                 print()
         else:
             year = datetime.today().timetuple().tm_year
@@ -42,7 +41,7 @@ def main():
             if len(menus) == 0:
                 print("Heute kein Essen!")
             else:
-                _get_menus(mensa,menus, year, year_day)
+                _get_menus(mensa, menus, year, year_day)
 
         print()
 
@@ -108,11 +107,11 @@ def _parse_hunger_config_file(filename, mensen):
     lines = file.read()
     config_list = lines.strip().split("\n")
 
-    return list(config_list & mensen.keys())
+    return list(set(config_list) & set(mensen.keys()))
 
 
 def _get_menus(mensa, menus, year, year_day):
-    print(mensa, "-",_get_date(year, year_day) + " :")
+    print(mensa, "-", _get_date(year, year_day) + " :")
     for index, menu in enumerate(menus):
         print("\t", index + 1, menu)
 
