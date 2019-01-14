@@ -38,6 +38,7 @@ def main():
             year_day = datetime.today().timetuple().tm_yday
 
             menus = food_dict[(year, year_day)]
+
             if len(menus) == 0:
                 print("Heute kein Essen!")
             else:
@@ -58,8 +59,7 @@ def download_food_menu(mensa_id):
 
 
 def get_food_menu(html_string):
-    week = datetime.now().isocalendar()[1]
-    day_numbers = _get_days_from_week_number(week)
+    day_numbers = _get_days_from_week_number()
 
     parser = etree.HTMLParser()
     root = etree.parse(StringIO(html_string), parser)
@@ -121,9 +121,12 @@ def _get_date(year, year_day):
     return t.strftime('%a %d.%m.%Y')
 
 
-def _get_days_from_week_number(week):
-    start = (week * 7) - 6
-    end = week * 7
+def _get_days_from_week_number():
+    weekday = datetime.today().weekday()
+    day_of_year = datetime.now().timetuple().tm_yday
+    start = day_of_year - weekday
+    end = start + 6
+
     return [i for i in range(start, end)]
 
 
