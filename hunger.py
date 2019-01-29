@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 def main():
     parser = argparse.ArgumentParser(description="Wir haben Hunger, Hunger, Hunger ...")
-    parser.add_argument("--mensa", "-m", help="Welche Mensa?", default="THM",
+    parser.add_argument("--mensa", "-m", help="Welche Mensa?",
                         choices=["THM", "MILF", "Campustor", "IFZ", "CaRe", "OBS"], nargs="*")
 
     parser.add_argument("--woche", "-w", help="Bunte Wochenübersicht ...", action='store_true', required=False)
@@ -15,13 +15,18 @@ def main():
 
     home = str(Path.home())
 
-    if os.path.isfile(home + "/.hunger"):
-        parsed_list = _parse_hunger_config_file(home + "/.hunger", mensen)
-        if len(parsed_list) != 0:
-            mensa_list = parsed_list
-        else:
-            print("Fehler in der Konfigurationsdatei. Keine gültigen Einträge gefunden!")
+    if mensa_list is None:
+        if not os.path.isfile(home + "/.hunger"):
+            print("Keine Mensa angegeben bzw. keine Konfigurationsdatei gefunden!")
+            print(parser.format_usage())
             exit(1)
+        else:
+            parsed_list = _parse_hunger_config_file(home + "/.hunger", mensen)
+            if len(parsed_list) != 0:
+                mensa_list = parsed_list
+            else:
+                print("Fehler in der Konfigurationsdatei. Keine gültigen Einträge gefunden!")
+                exit(1)
 
     for mensa in mensa_list:
         mensa_id = mensen[mensa]
