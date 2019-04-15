@@ -80,18 +80,18 @@ def get_food_menu(html_string):
 
         food_link = child.attrib.get("href")
 
-        if food_link is not None and food_link.startswith("detail"):
+        if food_link is not None and food_link.startswith("details"):
 
             year_day = day_pattern.findall(food_link)[0]
 
             year = int(year_day[:4])
             day = int(year_day[4:]) + 1
 
-            for h in child.findall(".//h3[@class='ct ui-li-heading']"):
+            for h in child.findall(".//h3[@class='ct ui-li-heading text2share']"):
                 prefix = h.text.replace("\xad", "").strip()
                 prefixes.append(prefix)
 
-            for p in child.findall(".//p[@class='ct']"):
+            for p in child.findall(".//p[@class='ct text2share']"):
                 suffix = p.text
                 if suffix is not None:
                     suffix = suffix.replace("\xad", "").strip()
